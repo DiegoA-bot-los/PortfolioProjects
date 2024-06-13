@@ -1,0 +1,67 @@
+---Percent of Population Infected---
+SELECT 
+location,
+population,
+MAX(total_cases) AS HighestInfectionCount,
+MAX(total_cases/population)*100 AS PercentofPopulationInfected
+FROM `myfirstproject-412801.COVID_PortfolioProject.COVID_Deaths`
+GROUP BY location, population 
+order by PercentofPopulationInfected desc
+
+---Percentage of Population Infected---
+SELECT 
+location,
+date,
+total_cases,
+population,
+total_cases/population*100 as PercentageofPopulationInfected --Shows the death likelyhood
+FROM `myfirstproject-412801.COVID_PortfolioProject.COVID_Deaths` 
+WHERE 
+location = "Mexico"
+order by 1,2
+
+---Probability of Death Percentage---
+SELECT 
+location,
+date,
+total_cases,
+total_deaths,
+total_deaths/total_cases*100 as DeathPercentage --Shows the death likelyhood
+FROM `myfirstproject-412801.COVID_PortfolioProject.COVID_Deaths` 
+WHERE 
+location = "Mexico"
+order by 1,2
+
+---MaxDeaths---
+SELECT 
+location,
+population,
+MAX(total_deaths) AS HighestDeathCount,
+MAX(total_deaths/population)*100 AS PercentofPopulationDead
+FROM `myfirstproject-412801.COVID_PortfolioProject.COVID_Deaths`
+WHERE continent is not null
+GROUP BY location, population 
+order by PercentofPopulationDead desc
+
+
+---PopulationDeathbyContinent---
+SELECT
+location,
+MAX(total_deaths) AS HighestDeathCount,
+FROM `myfirstproject-412801.COVID_PortfolioProject.COVID_Deaths`
+WHERE continent is null
+GROUP BY location 
+order by HighestDeathCount asc
+
+
+---TotalPopullationvsVaccination---
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations, SUM(vac.new_vaccinations) OVER (PARTITION BY dea.location ORDER BY dea.location,dea.date) as SumofPeopleVacc
+FROM myfirstproject-412801.COVID_PortfolioProject.COVID_Deaths dea
+JOIN myfirstproject-412801.COVID_PortfolioProject.COVID_Vaccination vac
+  ON dea.location = vac.location
+  and dea.date = vac.date
+WHERE dea.continent is not null
+ORDER BY 2,3
+
+
+---
